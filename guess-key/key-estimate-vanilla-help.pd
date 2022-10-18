@@ -1,0 +1,131 @@
+#N canvas 935 162 569 669 10;
+#X obj 1 0 cnv 15 552 40 empty \$0-pddp.cnv.header key-estimate 3 12
+0 18 -204280 -1 0;
+#X obj 111 182 makenote 127 500;
+#X msg 111 157 \$1 127;
+#X obj 111 135 random 12;
+#X obj 111 110 metro 1000;
+#X obj 111 89 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X floatatom 204 155 5 0 0 0 - - -;
+#X floatatom 168 90 5 0 0 0 - - -;
+#X obj 183 208 pack;
+#X obj 183 344 print key;
+#X obj 1 631 cnv 15 552 21 empty \$0-pddp.cnv.footer empty 20 12 0
+14 -228856 -66577 0;
+#X obj 1 382 cnv 3 550 3 empty \$0-pddp.cnv.inlets inlets 8 12 0 13
+-228856 -1 0;
+#X obj 1 460 cnv 3 550 3 empty \$0-pddp.cnv.outlets outlets 8 12 0
+13 -228856 -1 0;
+#X obj 1 540 cnv 3 550 3 empty \$0-pddp.cnv.argument arguments 8 12
+0 13 -228856 -1 0;
+#X obj 79 391 cnv 17 3 65 empty \$0-pddp.cnv.let.0 0 5 9 0 16 -228856
+-162280 0;
+#X text 99 390 list;
+#X obj 407 345 print keyID;
+#X obj 25 67 notein;
+#X obj 25 92 pack;
+#X text 23 48 Enter standard midi in \,;
+#X text 280 261 bang to reset the key estimator;
+#X text 2 23 estimates key of incoming midi data with profile matching
+;
+#X obj 260 262 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X text 169 588 - time window for key estimation (all weights apply).
+;
+#X text 82 588 2) float;
+#X text 82 568 1) symbol;
+#X obj 79 471 cnv 17 3 65 empty \$0-pddp.cnv.let.0 0 5 9 0 16 -228856
+-162280 0;
+#X text 99 470 symbol;
+#X obj 79 501 cnv 17 3 17 empty \$0-pddp.cnv.let.0 1 5 9 0 16 -228856
+-162280 0;
+#X text 169 498 - estimated key as integer (0-11 = major \, 12-23 minor).
+;
+#X text 169 468 - estimated key as symbol.;
+#X text 169 440 - a bang resets the key estimation algorithm.;
+#X text 99 440 bang;
+#N canvas 1247 104 545 423 advanced-options 0;
+#X floatatom 30 29 5 0 0 0 - - -;
+#X msg 96 156 profile temperley;
+#X text 95 85 additionally \, you could change the tonality profile
+chosen. However \, the tonality profile must be "declared" in the key-profile.txt
+\, otherwhise an exception will be thrown.;
+#X msg 96 179 profile edma;
+#X msg 96 204 profile wtk;
+#X msg 96 133 profile krumhansl;
+#X obj 31 275 s settings;
+#X msg 96 229 profile diatonic;
+#X text 210 132 pop music;
+#X text 210 155 western classical music;
+#X text 180 178 electronic dance music;
+#X text 178 205 based on Bach's Well Tempered Klavier;
+#X text 202 230 diatonic scales \, binary.;
+#X text 139 33 you can set dynamically the time window in miliseconds
+over which incoming notes are taken into account for tonality estimation.
+0 for infinite accumulation. Not Implemented;
+#X msg 30 49 timewindow \$1;
+#X connect 0 0 14 0;
+#X connect 1 0 6 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 5 0 6 0;
+#X connect 7 0 6 0;
+#X connect 14 0 6 0;
+#X restore 399 131 pd advanced-options;
+#X text 82 608 3) float;
+#X obj 259 295 r settings;
+#N canvas 509 610 546 301 output-settings 0;
+#X text 21 17 (default);
+#X obj 22 264 s settings;
+#X msg 21 38 output 0;
+#X text 87 29 output mode 0 returns a new key estimate after a new
+note is added into the estimation window. It can be used to estimate
+continuosly live input.;
+#X text 150 110 output mode 1 returns key estimates at constant intervals
+set by the user via the method refresh followed by a value in miliseconds.
+;
+#X msg 72 218 estimate;
+#X msg 62 138 refresh 3000;
+#X msg 42 98 output 1;
+#X msg 62 198 output 2;
+#X text 136 196 output mode 2 returns a key estimation only when requested
+by the user with the "estimate" keyword. This can be useful to analyse
+complete midi files or fragments.;
+#X msg 52 118 refresh 500;
+#X connect 2 0 1 0;
+#X connect 5 0 1 0;
+#X connect 6 0 1 0;
+#X connect 7 0 1 0;
+#X connect 8 0 1 0;
+#X connect 10 0 1 0;
+#X restore 399 152 pd output-settings;
+#X text 169 608 - output mode (see output-settings subpatch for help).
+;
+#X text 169 390 - lists starting with float are interpreted as note+velocity
+midi pairs. lists starting with a keyword affect different parameters
+of the algorithm.;
+#X text 99 500 float;
+#X text 169 568 - key template to be used as model.;
+#X obj 7 632 pddp/pddplink https://github.com/angelfaraldo/gspd;
+#X text 335 632 angelfaraldo@gmail.com \, 2015-2017;
+#X obj 92 89 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#X obj 183 321 key-estimate-vanilla krumhansl 10000 0;
+#X connect 1 0 8 0;
+#X connect 1 1 8 1;
+#X connect 2 0 1 0;
+#X connect 3 0 2 0;
+#X connect 4 0 3 0;
+#X connect 5 0 4 0;
+#X connect 6 0 1 2;
+#X connect 7 0 4 1;
+#X connect 8 0 44 0;
+#X connect 17 0 18 0;
+#X connect 17 1 18 1;
+#X connect 18 0 44 0;
+#X connect 22 0 44 0;
+#X connect 35 0 44 0;
+#X connect 43 0 3 0;
+#X connect 44 0 9 0;
+#X connect 44 1 16 0;
